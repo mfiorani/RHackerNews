@@ -2,7 +2,7 @@
 
 RHackerNews is a basic R client to the Hacker News API, with minimal post-processing (dates, html entities to UTF-8, root URL extraction). The package collects basic functions to retrieve data from the main available endpoints as specified by the *v0* version of the API, as of April 2019.
 
-More info about HackerNews project can be found at at https://news.ycombinator.com/
+More info about HackerNews project can be found at https://news.ycombinator.com/
 
 More info about HackerNews API is available at https://github.com/HackerNews/API
 
