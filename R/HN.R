@@ -1,18 +1,4 @@
-#' RHackerNews
-#'
-#' RHackerNews is a package that provides a basic R client to the Hacker News API.
-#'
-#' More info about HackerNews project can be found at at https://news.ycombinator.com/
-#'
-#' More info about HackerNews API is available at https://github.com/HackerNews/API
-#'
-#' The package collects basic functions to collect data from the main available endpoints as specified
-#' by the v0 version of the API, as of April 2019.
-#'
-#' The author is not affiliated with HackerNews or YCombinator.
-#' @docType package
-#' @name RHackerNews
-NULL
+
 
 baseurl <- "https://hacker-news.firebaseio.com/v0/"
 
@@ -21,95 +7,6 @@ unescape_html <- function(str){
   enc2utf8(tmp)
 }
 
-#' getHN
-#'
-#' \code{getHN} is the main function to collect data from a specific endpoint.
-#'
-#' @param what string value to specify the desired endpoint. Admitted values are "top", "new", "best", "ask", "show", "job", "updates".
-#'      The default value is \code{"top"}.
-#' @param n integer value to specifiy the maximum desired numbero of items to be retrieved.
-#'      \code{n} is automatically adjusted if it exceeds the maximum allowed size specified by the API for the specific endpoint.
-#'      The default value is \code{500}.
-#' @return It return a list of four objects:
-#'
-#' 1. a dataframe with tabular data (named "df")
-#'
-#' 2. a named list of retrieved kids objects (the ids of the item's comments, in ranked display order).
-#'
-#' 3. a named list of profiles (only populated by the "updates" API call)
-#'
-#' 4. a named list of poll-parts (related pollopts, in display order)
-#'
-#' 
-#' The tabular dataframe contains:
-#' 
-#' 1. id:  The item's unique id.
-#' 
-#' 2. deleted: Boolean if the item is deleted.
-#' 
-#' 3. type:  The type of item. One of "job", "story", "comment", "poll", or "pollopt".
-#' 
-#' 4. by:  The username of the item's author.
-#' 
-#' 5. time:  Creation datetime of the item.
-#' 
-#' 6. text:  The comment, story or poll text. UTF-8.
-#' 
-#' 7. dead:  Boolean if the item is dead.
-#' 
-#' 8. parent:  The comment's parent: either another comment or the relevant story.
-#' 
-#' 9. poll:  The pollopt's associated poll.
-#' 
-#' 10. url:   The URL of the story.
-#' 
-#' 11. score:   The story's score, or the votes for a pollopt.
-#' 
-#' 12. title:   The title of the story, poll or job.
-#' 
-#' 13. descendants: In the case of stories or polls, the total comment count.
-#' 
-#' 14. nkids: The count of kid's id
-#' 
-#' 15. site: Base website URL of the story or job posting.
-#'
-#' @examples
-#' # Retrieve data from endpoints
-#' top <- getHN(what = "top", n = 10)
-#' job <- getHN(what = "job", n = 10)
-#' best <- getHN(what = "best", n = 10)
-#' ask <- getHN(what = "ask", n = 10)
-#' show <- getHN(what = "show", n = 10)
-#' updates <- getHN(what = "updates", n = 10)
-#'
-#' # View data table from previous "topstories" API call
-#' View(top$df)
-#'
-#' # List "kids" elements from previous "beststories" API call
-#' for(id in best$df$id){
-#'    pid <- as.character(id)
-#'    print(best$kids[pid])
-#' }
-#'
-#' # Example plots
-#' library(dplyr)
-#' library(ggplot2)
-#' news_by_user <- top$df %>% group_by(by) %>% summarise(count = n()) %>% arrange(desc(count))
-#' top$df %>% filter(by %in% news_by_user$by[1:10]) %>% ggplot(aes(by)) +
-#'   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-#'   labs(title="Top news - Histogram for user")
-#'
-#' news_by_site <- top$df %>% group_by(site) %>% filter(!is.na(site)) %>% summarise(count = n()) %>% arrange(desc(count))
-#' top$df %>% filter(site %in% news_by_site$site[1:10]) %>% ggplot(aes(site)) +
-#'   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-#'   labs(title="Top news - Histogram for website")
-#'
-#' jobs_by_site <- job$df %>% group_by(site) %>% filter(!is.na(site)) %>% summarise(count = n()) %>% arrange(desc(count))
-#' job$df %>% filter(site %in% jobs_by_site$site[1:10]) %>% ggplot(aes(site)) +
-#'   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-#'   labs(title="Top jobs - Histogram for website")
-#'
-#' @export
 getHN <- function(what = "top", n = 500){
   endpoints <- c("top", "new", "best", "ask", "show", "job", "updates")
   stopifnot(what %in% endpoints)
@@ -158,29 +55,6 @@ getHN <- function(what = "top", n = 500){
   list(df = df, kids = kids, profiles = profiles, parts = parts)
 }
 
-#' getItem
-#'
-#'  \code{getItem} is a function to retrieve data for a specific item.
-#'
-#' @param id integer value corresponding to the item id.
-#' @return It return a list of two objects:
-#'
-#'    1. a dataframe with tabular data (named "df")
-#'
-#'    2. a named list of retrieved kids objects
-#'
-#'    3. a named list of retrieved poll-parts objects
-#'
-#' @examples
-#' # Get a single item
-#' job1 <- getItem(19567427)
-#' story1 <- getItem(19553941)
-#'
-#' # Look into the object elements
-#' job1$df
-#' story1$df
-#' story1$kids
-#' @export
 getItem <- function(id){
   url <- paste0(RHackerNews:::baseurl, "item/", as.character(id), ".json?print=pretty")
   content <- jsonlite::fromJSON(url)
@@ -210,32 +84,6 @@ getItem <- function(id){
   list(df = data.frame(content, stringsAsFactors = F), kids = kids, parts = parts)
 }
 
-#' getUsers
-#'
-#' \code{getUsers} is a function to retrieve data for a specific user or a vector of user IDs.
-#'
-#' @param users string or list of user id(s).
-#' @return The function returns a list of two objects:
-#'
-#'    1. a dataframe with tabular data (named "df")
-#'
-#'    2. a named list of submitted items
-#'
-#' @examples
-#' # Get a single user data
-#' user1 <- getUsers("jl")
-#' View(user1$df)
-#' user1$submitted
-#'
-#' # Get last updated users profiles
-#' updates <- getHN(what = "updates", n = 10)
-#' users <- getUsers(updates$profiles)
-#'
-#' View(users$df)
-#' for(id in users$df$id){
-#'    print(users$submitted[id])
-#' }
-#' @export
 getUsers <- function(users){
   df <- data.frame(stringsAsFactors = F)
   submitted <- list()
