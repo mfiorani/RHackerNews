@@ -48,9 +48,9 @@ job$df %>% filter(site %in% jobs_by_site$site[1:10]) %>% ggplot(aes(site)) +
 ```
 
 
-![Topstories by user](https://github.com/mfiorani/RHackerNews/raw/master/img/topstories_by_user.png "Top stories by user")
-![Top stories by site](https://github.com/mfiorani/RHackerNews/raw/master/img/topstories_by_site.png "Top stories by site")
-![Top jobs by site](https://github.com/mfiorani/RHackerNews/raw/master/img/jobstories_by_site.png "Top jobs by site")
+![Topstories by user](https://github.com/mfiorani/RHackerNews/raw/master/pics/topstories_by_user.png "Top stories by user")
+![Top stories by site](https://github.com/mfiorani/RHackerNews/raw/master/pics/topstories_by_site.png "Top stories by site")
+![Top jobs by site](https://github.com/mfiorani/RHackerNews/raw/master/pics/jobstories_by_site.png "Top jobs by site")
 
 
 
