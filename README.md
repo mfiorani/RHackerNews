@@ -19,19 +19,26 @@ To install RHackerNews from GitHub use the following:
 ### Basic usage
 ```R
 library(RHackerNews)
+library(dplyr)
+library(ggplot2)
+
+# retrieving topstories and jobstories
 top <- getHN(what = "top", n = 100)
 job <- getHN(what = "job", n = 50)
 
+# plotting top 10 users for topstories 
 news_by_user <- top$df %>% group_by(by) %>% summarise(count = n()) %>% arrange(desc(count))
 top$df %>% filter(by %in% news_by_user$by[1:10]) %>% ggplot(aes(by)) +
   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(title="Top news - Histogram for user")
 
+# plotting top 10 sites for topstories
 news_by_site <- top$df %>% group_by(site) %>% filter(!is.na(site)) %>% summarise(count = n()) %>% arrange(desc(count))
 top$df %>% filter(site %in% news_by_site$site[1:10]) %>% ggplot(aes(site)) +
   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(title="Top news - Histogram for website")
 
+# plotting top 10 sites for job posting
 jobs_by_site <- job$df %>% group_by(site) %>% filter(!is.na(site)) %>% summarise(count = n()) %>% arrange(desc(count))
 job$df %>% filter(site %in% jobs_by_site$site[1:10]) %>% ggplot(aes(site)) +
   geom_histogram(stat = "count") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
