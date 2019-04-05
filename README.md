@@ -25,8 +25,8 @@ library(dplyr)
 library(ggplot2)
 
 # retrieving topstories and jobstories
-top <- getHN(what = "top", n = 100)
-job <- getHN(what = "job", n = 50)
+top <- getHN(what = "top", n = 500)
+job <- getHN(what = "job", n = 200)
 
 # plotting top 10 users for topstories 
 news_by_user <- top$df %>% group_by(by) %>% summarise(count = n()) %>% arrange(desc(count))
