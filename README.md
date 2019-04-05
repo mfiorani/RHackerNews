@@ -14,7 +14,9 @@ Who doesn't love HackerNews? :)
 ### Installation
 To install RHackerNews from GitHub use the following:
 
-`devtools::install_github("mfiorani/RHackerNews")`
+```R
+devtools::install_github("mfiorani/RHackerNews")
+```
 
 ### Basic usage
 ```R
